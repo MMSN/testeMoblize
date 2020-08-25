@@ -28,6 +28,10 @@ const userSchema = new Schema({
         type: Date,
         required: true,
     },
+    rents: [{
+        type: Schema.Types.ObjectId,
+        ref: 'rent'
+    }],
 }, { versionKey: false });
 
 module.exports = mongoose.model('user', userSchema);
