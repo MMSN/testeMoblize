@@ -19,8 +19,8 @@ app.use((req, res, next) => {
 });
 
 app.use('/auth', authRoutes);
-app.use('/car', carRoutes);
-app.use('/rent', rentRoutes);
+app.use('/cars', carRoutes);
+app.use('/rents', rentRoutes);
 
 app.use((error, req, res, next) => {
     console.log(error);

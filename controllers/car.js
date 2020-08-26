@@ -4,14 +4,26 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 exports.getCars = (req, res, next) => {
-    //id do criador
-    const creator = req.userId;
+    const currentPage = req.query.page || 1;
+    const perPage = 10;
+    let totalItems;
     //todos os cars
     Car.find()
+      .countDocuments()
+      .then(count => {
+        totalItems = count;
+        return Car.find().select('-rents')
+          .skip((currentPage - 1) * perPage)
+          .limit(perPage)
+      })
       .then(cars => {
           res
             .status(200)
-            .json({message: 'Carros encontrados com sucesso', cars: cars});
+            .json({
+                message: 'Carros encontrados com sucesso', 
+                cars: cars,
+                totalItems: totalItems
+            });
       })
       .catch(err => {
           if (!err.statusCode) {
@@ -23,7 +35,7 @@ exports.getCars = (req, res, next) => {
 
 exports.getCar = (req, res, next) => {
     const carId = req.params.carId;
-    Car.findOne({id: carId})
+    Car.findById(carId).populate()
         .then(car => {
             if (!car) {
                 const error = new Error('ID de carro nao encontrado!');
