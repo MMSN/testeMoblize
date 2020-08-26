@@ -21,7 +21,11 @@ const carSchema = new Schema({
     category: {
         type: String,
         required: true
-    }
+    },
+    rents: [{
+        type: Schema.Types.ObjectId,
+        ref: 'rent'
+    }],
 }, { versionKey: false });
 
 module.exports = mongoose.model('car', carSchema);

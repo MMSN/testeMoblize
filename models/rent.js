@@ -16,6 +16,10 @@ const rentSchema = new Schema({
         type: Date,
         required: true,
     },
+    endingdate: {
+        type: Date,
+        required: true,
+    },
     duration: {
         type: Number,
         required: true

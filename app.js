@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 //routes
 const authRoutes = require('./routes/auth');
 const carRoutes = require('./routes/car');
+const rentRoutes = require('./routes/rent');
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
 
 app.use('/auth', authRoutes);
 app.use('/car', carRoutes);
+app.use('/rent', rentRoutes);
 
 app.use((error, req, res, next) => {
     console.log(error);
