@@ -7,12 +7,47 @@ exports.getCars = (req, res, next) => {
     const currentPage = req.query.page || 1;
     const perPage = 10;
     let totalItems;
-    //todos os cars
-    Car.find()
+    let query = {}, sortFinal = {};
+    if (req.query.model) {
+        //query = {'model': req.query.model};
+        query['model'] = req.query.model;
+    } 
+    if (req.query.category) {
+        //query = {'color': req.query.color};
+        query['category'] = req.query.category;
+    }  
+    if (req.query.color) {
+        //query = {'color': req.query.color};
+        query['color'] = req.query.color;
+    }
+    if (req.query.sortBy) {
+        let sortQuery = req.query.sortBy;
+        let aux = {};
+        if (! req.query.orderBy) {
+            aux[sortQuery] = 1;
+        }
+        else {
+            let value;
+            if (req.query.orderBy === 'desc') {
+                value = -1;
+            }
+            else {
+                value = 1;
+            }
+            //let order = req.query.orderBy;
+            aux[sortQuery] = value;
+        }
+        sortFinal['sort'] = aux;
+    }
+    //console.log(sortFinal);
+    //console.log(query);
+    //todos os carros
+    //{sort: {'model': -1}}
+    Car.find(query, null, sortFinal)
       .countDocuments()
       .then(count => {
         totalItems = count;
-        return Car.find().select('-rents')
+        return Car.find(query, null, sortFinal).select('-rents')
           .skip((currentPage - 1) * perPage)
           .limit(perPage)
       })
@@ -88,3 +123,41 @@ exports.postCar = async (req, res, next) => {
             next(err);
         });
 };
+
+exports.simulationCar = (req, res, next) => {
+    const query = req.query;
+    console.log(query);
+
+    Car.findOne({'model': query.model})
+      .then(car => {
+        if (!car) {
+            const error = new Error('Modelo de carro nao encontrado!');
+            error.statusCode = 404;
+            throw error;
+        }
+        let total, totalValue;
+        const category = car.category;
+        if (category === "padrao") {
+            total = 99.99;
+        } else if (category === "executivo") {
+            total = 199.99;
+        } else {
+            total = 350;
+        }
+        totalValue = total * query.duration;
+        //console.log("Encontrado"+totalValue, total);
+        res.status(200).json({
+            message: 'Carro encontrado!', 
+            model: car.model,
+            category: car.category,
+            totalValue: totalValue
+        });
+      })
+      .catch(err => {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+      });
+
+}

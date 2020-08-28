@@ -9,7 +9,7 @@ const rentSchema = new Schema({
     },
     car: {
         type: Schema.Types.ObjectId,
-        ref: 'projeto',
+        ref: 'car',
         required: true
     },
     begindate: {

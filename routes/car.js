@@ -10,13 +10,16 @@ const router = express.Router();
 //router.get('/index/:filter', isAuth, naverController.getNaversFilter);
 
 // Get All navers
-router.get('/index', carController.getCars); 
+router.get('/index', isAuth, carController.getCars); 
 
 // Get One naver by id
-router.get("/show/:carId", carController.getCar); 
+router.get("/show/:carId", isAuth, carController.getCar); 
 
 // Create One Route
-router.post("/store", carController.postCar);
+router.post("/store", isAuth, carController.postCar);
+
+// Simulating
+router.get("/simulation/", isAuth, carController.simulationCar);
 
 // Edit One Route PUT version
 //router.put("/update/:naverId", isAuth, naverController.updateNaver);
